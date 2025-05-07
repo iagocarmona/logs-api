@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model SystemEvents {
+  ID                 Int       @id @default(autoincrement())
+  CustomerID         Int?
+  ReceivedAt         DateTime?
+  DeviceReportedTime DateTime?
+  Facility           Int?      @db.SmallInt
+  Priority           Int?      @db.SmallInt
+  FromHost           String?   @db.VarChar(60)
+  Message            String?   @db.Text
+  NTSeverity         Int?
+  Importance         Int?
+  EventSource        String?   @db.VarChar(60)
+  EventUser          String?   @db.VarChar(60)
+  EventCategory      Int?
+  EventID            Int?
+  EventBinaryData    String?   @db.Text
+  MaxAvailable       Int?
+  CurrUsage          Int?
+  MinUsage           Int?
+  MaxUsage           Int?
+  InfoUnitID         Int?
+  SysLogTag          String?   @db.VarChar(60)
+  EventLogType       String?   @db.VarChar(60)
+  GenericFileName    String?   @db.VarChar(60)
+  SystemID           Int?
+
+  properties SystemEventsProperties[]
+}
+
+model SystemEventsProperties {
+  ID            Int     @id @default(autoincrement())
+  SystemEventID Int?
+  ParamName     String? @db.VarChar(255)
+  ParamValue    String? @db.Text
+
+  event SystemEvents? @relation(fields: [SystemEventID], references: [ID], onDelete: Cascade)
+}
